@@ -22,13 +22,14 @@ public class servicioUsuario implements interfazUsuario {
     }
 
     @Override
-    public List<Map<String, Object>> listar(int id) {
-        return List.of();
+    public List<Map<String, Object>> listar(String email) {
+        return dao.listar(email);
     }
 
     @Override
-    public modeloUsuario add(modeloUsuario u) {
-        return null;
+    public int add(modeloUsuario u) {
+
+        return dao.add(u);
     }
 
     @Override

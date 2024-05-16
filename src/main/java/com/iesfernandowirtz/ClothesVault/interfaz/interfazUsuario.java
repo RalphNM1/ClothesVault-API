@@ -7,8 +7,8 @@ import java.util.Map;
 
 public interface interfazUsuario {
     public List<Map<String,Object>> listar();
-    public List<Map<String,Object>> listar(int id);
-    public modeloUsuario add(modeloUsuario u);
+    public List<Map<String,Object>> listar(String email);
+    public int add(modeloUsuario u);
     public modeloUsuario edit(modeloUsuario u);
     public void delete(int id);
 }

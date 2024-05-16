@@ -24,13 +24,17 @@ public class usuarioDAO implements interfazUsuario {
     }
 
     @Override
-    public List<Map<String, Object>> listar(int id) {
-        return List.of();
+    public List<Map<String, Object>> listar(String email) {
+        String sql = "select * from usuario where email = ?";
+
+        return templete.queryForList(sql, email);
     }
 
     @Override
-    public modeloUsuario add(modeloUsuario u) {
-        return null;
+    public int add(modeloUsuario u) {
+        String sql = "insert into usuario(email,contrasenha,nombre,apellido1,apellido2,direccion,cp)values(?,?,?,?,?,?,?)";
+
+        return  templete.update(sql,u.getEmail(),u.getContrasenha(),u.getNombre(),u.getApellido1(), u.getApellido2(), u.getDireccion(), u.getCp());
     }
 
     @Override
