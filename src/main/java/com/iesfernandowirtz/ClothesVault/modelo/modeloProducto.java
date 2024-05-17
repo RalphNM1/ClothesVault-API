@@ -32,24 +32,12 @@ public class modeloProducto {
     @JoinColumn(name = "proveedor_id")
     private modeloProveedor proveedor;
 
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private modeloCategoria categoria;
+
     @OneToMany(mappedBy = "producto")
     private Set<modeloDetallePedido> detallePedidos;
-
-    public String getTalla() {
-        return talla;
-    }
-
-    public void setTalla(String talla) {
-        this.talla = talla;
-    }
-
-    public byte[] getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(byte[] imagen) {
-        this.imagen = imagen;
-    }
 
     public Long getId() {
         return id;
@@ -91,11 +79,36 @@ public class modeloProducto {
         this.stock = stock;
     }
 
+    public byte[] getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(byte[] imagen) {
+        this.imagen = imagen;
+    }
+
+    public String getTalla() {
+        return talla;
+    }
+
+    public void setTalla(String talla) {
+        this.talla = talla;
+    }
+
     public modeloProveedor getProveedor() {
         return proveedor;
     }
+
     public void setProveedor(modeloProveedor proveedor) {
         this.proveedor = proveedor;
+    }
+
+    public modeloCategoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(modeloCategoria categoria) {
+        this.categoria = categoria;
     }
 
     public Set<modeloDetallePedido> getDetallePedidos() {
@@ -105,6 +118,4 @@ public class modeloProducto {
     public void setDetallePedidos(Set<modeloDetallePedido> detallePedidos) {
         this.detallePedidos = detallePedidos;
     }
-
-
 }
