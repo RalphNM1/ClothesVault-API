@@ -24,7 +24,7 @@ public class modeloProducto {
 
     private Integer stock;
 
-    private byte[] imagen;
+    private String imagen_url; // Cambiado de byte[] a String
 
     private String talla;
 
@@ -79,12 +79,12 @@ public class modeloProducto {
         this.stock = stock;
     }
 
-    public byte[] getImagen() {
-        return imagen;
+    public String getImagenUrl() {
+        return imagen_url;
     }
 
-    public void setImagen(byte[] imagen) {
-        this.imagen = imagen;
+    public void setImagenUrl(String imagen_url) {
+        this.imagen_url = this.imagen_url;
     }
 
     public String getTalla() {
@@ -97,6 +97,14 @@ public class modeloProducto {
 
     public modeloProveedor getProveedor() {
         return proveedor;
+    }
+
+    public String getImagen_url() {
+        return imagen_url;
+    }
+
+    public void setImagen_url(String imagen_url) {
+        this.imagen_url = imagen_url;
     }
 
     public void setProveedor(modeloProveedor proveedor) {
