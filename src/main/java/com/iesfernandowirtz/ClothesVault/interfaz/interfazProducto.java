@@ -1,5 +1,6 @@
 package com.iesfernandowirtz.ClothesVault.interfaz;
 
+import com.iesfernandowirtz.ClothesVault.modelo.modeloCategoria;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloProducto;
 
 import java.util.List;
@@ -11,4 +12,10 @@ public interface interfazProducto {
     public modeloProducto add(modeloProducto p);
     public modeloProducto edit(modeloProducto p);
     public void delete(int id);
+
+    List<String> listarMarcas();
+
+    List<modeloProducto> getProductosPorCategoria(Long idCategoria);
+    List<modeloProducto> getProductosPorCategoria(Long idCategoria, String marca);
+    List<modeloProducto> getProductosPorMarca(String marca);
 }

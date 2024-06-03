@@ -1,6 +1,7 @@
 package com.iesfernandowirtz.ClothesVault.servicio;
 
 import com.iesfernandowirtz.ClothesVault.interfaz.interfazProducto;
+import com.iesfernandowirtz.ClothesVault.modelo.modeloCategoria;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloProducto;
 import com.iesfernandowirtz.ClothesVault.modeloDAO.productoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ public class servicioProducto implements interfazProducto {
         return dao.listar();
     }
 
+
     @Override
     public List<Map<String, Object>> listar(int id) {
         return List.of();
@@ -40,6 +42,25 @@ public class servicioProducto implements interfazProducto {
     public void delete(int id) {
 
     }
+
+    @Override
+    public List<String> listarMarcas() {
+        return dao.listarMarcas();
+    }
+
+    public List<modeloProducto> getProductosPorCategoria(Long idCategoria,String marca) {
+        return dao.getProductosPorCategoria(idCategoria, marca);
+    }
+
+    public List<modeloProducto> getProductosPorMarca(String marca) {
+        return dao.getProductosPorMarca(marca);
+    }
+
+    public List<modeloProducto> getProductosPorCategoria(Long idCategoria) {
+        return dao.getProductosPorCategoria(idCategoria);
+    }
+
+
 }
 
 

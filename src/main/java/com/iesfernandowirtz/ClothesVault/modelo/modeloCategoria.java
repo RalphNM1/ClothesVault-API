@@ -2,10 +2,17 @@ package com.iesfernandowirtz.ClothesVault.modelo;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Data
 @NoArgsConstructor
@@ -18,30 +25,19 @@ public class modeloCategoria {
 
     private String nombre;
 
-    @OneToMany(mappedBy = "categoria")
-    private Set<modeloProducto> productos;
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<modeloProducto> productos = new ArrayList<modeloProducto>();
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
+    public modeloCategoria(Long id, String nombre, List<modeloProducto> productos) {
         this.id = id;
+        this.nombre = nombre;
+        this.productos = productos;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
+    public modeloCategoria(Long id, String nombre) {
+        this.id = id;
         this.nombre = nombre;
     }
 
-    public Set<modeloProducto> getProductos() {
-        return productos;
-    }
-
-    public void setProductos(Set<modeloProducto> productos) {
-        this.productos = productos;
-    }
 }
