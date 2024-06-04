@@ -2,11 +2,15 @@ package com.iesfernandowirtz.ClothesVault.modelo;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Date;
 import java.util.Set;
 
+@Setter
+@Getter
 @Entity
 @Data
 @NoArgsConstructor
@@ -15,6 +19,7 @@ public class modeloPedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -24,6 +29,7 @@ public class modeloPedido {
     @Column(name = "direccion_entrega")
     private String direccionEntrega;
 
+    @Column(name = "estado")
     private String estado;
 
     @Column(name = "fecha_pedido")
@@ -32,51 +38,4 @@ public class modeloPedido {
     @OneToMany(mappedBy = "pedido")
     private Set<modeloDetallePedido> detallePedidos;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public modeloUsuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(modeloUsuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getDireccionEntrega() {
-        return direccionEntrega;
-    }
-
-    public void setDireccionEntrega(String direccionEntrega) {
-        this.direccionEntrega = direccionEntrega;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public Date getFechaPedido() {
-        return fechaPedido;
-    }
-
-    public void setFechaPedido(Date fechaPedido) {
-        this.fechaPedido = fechaPedido;
-    }
-
-    public Set<modeloDetallePedido> getDetallePedidos() {
-        return detallePedidos;
-    }
-
-    public void setDetallePedidos(Set<modeloDetallePedido> detallePedidos) {
-        this.detallePedidos = detallePedidos;
-    }
 }

@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -14,7 +12,7 @@ public class modeloDetallePedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "detalle_pedidos_id")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -25,49 +23,11 @@ public class modeloDetallePedido {
     @JoinColumn(name = "producto_id")
     private modeloProducto producto;
 
-    @Column(name = "PrecioTotal")
-    private Integer precioTotal;
+    @Column(name = "cantidad")
+    private Integer cantidad;
 
-    @Column(name = "Fecha")
-    private Date fecha;
+    @Column(name = "precio_total")
+    private Double precioTotal;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public modeloPedido getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(modeloPedido pedido) {
-        this.pedido = pedido;
-    }
-
-    public modeloProducto getProducto() {
-        return producto;
-    }
-
-    public void setProducto(modeloProducto producto) {
-        this.producto = producto;
-    }
-
-    public Integer getPrecioTotal() {
-        return precioTotal;
-    }
-
-    public void setPrecioTotal(Integer precioTotal) {
-        this.precioTotal = precioTotal;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
+    // Constructor y getters/setters
 }
