@@ -12,7 +12,4 @@ public interface interfazCategoria {
     public modeloCategoria add(modeloCategoria c);
     public modeloCategoria edit(modeloCategoria c);
     public void delete(int id);
-
-    // Nuevos métodos
-    List<modeloCategoria> listarCategorias();
 }

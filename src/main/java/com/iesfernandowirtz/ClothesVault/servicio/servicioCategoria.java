@@ -41,10 +41,5 @@ public class servicioCategoria implements interfazCategoria {
 
     }
 
-    @Override
-    public List<modeloCategoria> listarCategorias() {
-        return dao.listarCategorias();
-    }
-
 
 }

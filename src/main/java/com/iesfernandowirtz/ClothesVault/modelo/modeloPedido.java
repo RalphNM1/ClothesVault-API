@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -26,9 +27,6 @@ public class modeloPedido {
     @JoinColumn(name = "usuario_id")
     private modeloUsuario usuario;
 
-    @Column(name = "direccion_entrega")
-    private String direccionEntrega;
-
     @Column(name = "estado")
     private String estado;
 
@@ -36,6 +34,9 @@ public class modeloPedido {
     private Date fechaPedido;
 
     @OneToMany(mappedBy = "pedido")
-    private Set<modeloDetallePedido> detallePedidos;
+    private List<modeloDetallePedido> detallePedidos = new ArrayList<modeloDetallePedido>();
 
+    public modeloPedido(Long id) {
+        this.id = id;
+    }
 }

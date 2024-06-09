@@ -41,4 +41,8 @@ public class servicioUsuario implements interfazUsuario {
     public void delete(int id) {
 
     }
+
+    public modeloUsuario buscarPorCorreo(String email) {
+        return dao.buscarPorCorreo(email);
+    }
 }

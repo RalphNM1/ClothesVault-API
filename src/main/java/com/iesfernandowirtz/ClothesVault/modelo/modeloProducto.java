@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Base64;
 import java.util.Set;
 
 @Setter
@@ -35,11 +36,9 @@ public class modeloProducto {
     @Column(name = "stock")
     private Integer stock;
 
-    @Column(name = "marca")
-    private String marca;
-
-    @Column(name = "imagen_url")
-    private String imagen_url;
+    @Lob
+    @Column(name = "imagen")
+    private byte[] imagen;
 
     @Column(name = "talla")
     private String talla;
@@ -55,4 +54,15 @@ public class modeloProducto {
     @OneToMany(mappedBy = "producto")
     private Set<modeloDetallePedido> detallePedidos;
 
+    @Transient
+    private String imagenBase64;
+
+    public String getImagenBase64() {
+        return imagen != null ? Base64.getEncoder().encodeToString(imagen) : null;
+    }
+
+    public void setImagenBase64(String imagenBase64) {
+        this.imagenBase64 = imagenBase64;
+        this.imagen = imagenBase64 != null ? Base64.getDecoder().decode(imagenBase64) : null;
+    }
 }

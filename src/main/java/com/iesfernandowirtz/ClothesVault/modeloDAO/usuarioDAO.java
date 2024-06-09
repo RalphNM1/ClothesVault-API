@@ -3,9 +3,13 @@ package com.iesfernandowirtz.ClothesVault.modeloDAO;
 import com.iesfernandowirtz.ClothesVault.interfaz.interfazUsuario;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -46,4 +50,38 @@ public class usuarioDAO implements interfazUsuario {
     public void delete(int id) {
 
     }
+    private modeloUsuario mapRowToUsuario(ResultSet rs) throws SQLException {
+        modeloUsuario usuario = new modeloUsuario();
+        usuario.setId(rs.getLong("id"));
+        usuario.setEmail(rs.getString("email"));
+        usuario.setContrasenha(rs.getString("contrasenha"));
+        usuario.setNombre(rs.getString("nombre"));
+        usuario.setApellido1(rs.getString("apellido1"));
+        usuario.setApellido2(rs.getString("apellido2"));
+        usuario.setDireccion(rs.getString("direccion"));
+        usuario.setCp(rs.getInt("cp"));
+        return usuario;
+    }
+
+    public modeloUsuario buscarPorCorreo(String email) {
+        String sql = "SELECT * FROM usuario WHERE email = ?";
+        try {
+            // Registro de depuración para verificar la ejecución de la consulta SQL
+            System.out.println("Ejecutando consulta SQL: " + sql);
+            System.out.println("Parámetro email: " + email);
+
+            // Ejecutar la consulta SQL y mapear el resultado a un objeto modeloUsuario
+            return templete.queryForObject(sql, new Object[]{email}, (rs, rowNum) -> mapRowToUsuario(rs));
+        } catch (EmptyResultDataAccessException e) {
+            // Registro de depuración en caso de que no se encuentre ningún resultado
+            System.out.println("No se encontraron resultados para el correo electrónico: " + email);
+            return null;
+        } catch (DataAccessException e) {
+            // Registro de depuración en caso de que ocurra algún error de acceso a datos
+            System.out.println("Error al ejecutar la consulta SQL: " + e.getMessage());
+            return null;
+        }
+    }
+
+
 }

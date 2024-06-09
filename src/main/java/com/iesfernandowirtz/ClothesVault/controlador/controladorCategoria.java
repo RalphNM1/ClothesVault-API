@@ -14,12 +14,6 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:8080")
 public class controladorCategoria {
 
-    /*
-    @GetMapping("/categorias2")
-    public List<modeloCategoria> listar2() {
-        return servicioProducto.listarCategorias();
-    }
-*/
     @Autowired
     servicioCategoria servicioCategoria;
 
@@ -28,10 +22,7 @@ public class controladorCategoria {
         return servicioCategoria.listar();
     }
 
-    @GetMapping("/listar2")
-    public List<modeloCategoria> listarCategorias() {
-        return servicioCategoria.listarCategorias();
-    }
+
 
 
 }
