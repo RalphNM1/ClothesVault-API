@@ -4,23 +4,21 @@ import com.iesfernandowirtz.ClothesVault.interfaz.interfazProducto;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloCategoria;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloProducto;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloProveedor;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 
-@Repository
+@Repository // Anotación para indicar que esta clase es un componente de acceso a datos
 public class productoDAO implements interfazProducto {
 
-    @Autowired
+    @Autowired // Inyección de dependencias de JdbcTemplate
     JdbcTemplate template;
 
     @Override
@@ -28,7 +26,6 @@ public class productoDAO implements interfazProducto {
         List<Map<String, Object>> lista = template.queryForList("select * from producto");
         return lista;
     }
-
 
     @Override
     public List<Map<String, Object>> listar(int id) {
@@ -47,21 +44,21 @@ public class productoDAO implements interfazProducto {
 
     @Override
     public void delete(int id) {
+        // Método sin implementar para eliminar un producto por su ID
     }
-
 
     @Override
     public List<modeloProducto> getProductosPorCategoria(Long idCategoria) {
         String sql = "SELECT * FROM producto WHERE categoria_id = ?";
-        return template.query(sql, new Object[]{idCategoria}, (rs, rowNum) -> {
-            return mapearProducto(rs);
-        });
+        return template.query(sql, new Object[]{idCategoria}, (rs, rowNum) -> mapearProducto(rs));
     }
 
     public List<String> listarMarcasDeProveedores() {
         String sql = "SELECT DISTINCT p.nombre FROM proveedor p JOIN producto pr ON p.id = pr.proveedor_id";
         return template.query(sql, (rs, rowNum) -> rs.getString("nombre"));
     }
+
+    // Método auxiliar para mapear un ResultSet a un objeto modeloProducto
     private modeloProducto mapearProducto(ResultSet rs) throws SQLException {
         modeloProducto producto = new modeloProducto();
         producto.setId(rs.getLong("id"));
@@ -90,7 +87,6 @@ public class productoDAO implements interfazProducto {
         return template.query(sql, new Object[]{idCategoria, nombreProveedor}, (rs, rowNum) -> mapearProducto(rs));
     }
 
-
     public modeloProducto obtenerProductoPorId(Long idProducto) {
         try {
             System.out.println("Buscando producto por id: " + idProducto);
@@ -105,18 +101,14 @@ public class productoDAO implements interfazProducto {
                 producto.setImagen(rs.getBytes("imagen"));
                 producto.setTalla(rs.getString("talla"));
 
-                //  mapear las relaciones de muchos a uno
-                // como categoria y proveedor si deseas utilizarlas.
+                // Mapeo de las relaciones ManyToOne con modeloCategoria y modeloProveedor
+                modeloCategoria categoria = new modeloCategoria();
+                categoria.setId(rs.getLong("categoria_id"));
+                producto.setCategoria(categoria);
 
-                //  relación ManyToOne con modeloCategoria:
-                 modeloCategoria categoria = new modeloCategoria();
-                 categoria.setId(rs.getLong("categoria_id"));
-                 producto.setCategoria(categoria);
-
-                //relación ManyToOne con modeloProveedor:
-                 modeloProveedor proveedor = new modeloProveedor();
-                 proveedor.setId(rs.getLong("proveedor_id"));
-                 producto.setProveedor(proveedor);
+                modeloProveedor proveedor = new modeloProveedor();
+                proveedor.setId(rs.getLong("proveedor_id"));
+                producto.setProveedor(proveedor);
 
                 return producto;
             });

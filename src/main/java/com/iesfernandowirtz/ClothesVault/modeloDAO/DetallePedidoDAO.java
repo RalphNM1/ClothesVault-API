@@ -3,7 +3,6 @@ package com.iesfernandowirtz.ClothesVault.modeloDAO;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloDetallePedido;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloPedido;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloProducto;
-import com.iesfernandowirtz.ClothesVault.modelo.modeloDetallePedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,18 +10,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import java.sql.ResultSet;
 
-import java.sql.SQLException;
 import java.util.List;
 
-@Repository
+@Repository // Anotación que indica que esta clase sirve como componente de acceso a datos
 public class DetallePedidoDAO {
 
-    @Autowired
+    @Autowired // Inyección de dependencias de JdbcTemplate
     private JdbcTemplate template;
 
-
+    // Método para buscar detalles de pedido por pedido
     public List<modeloDetallePedido> buscarDetallesPorPedido(modeloPedido pedido) {
         String sql = "SELECT dp.id, dp.cantidad, dp.precio_total, p.id as producto_id, p.nombre, p.talla, p.descripcion, p.precio, p.stock, p.imagen " +
                 "FROM detalle_pedido dp INNER JOIN producto p ON dp.producto_id = p.id WHERE dp.pedido_id = ?";
@@ -47,19 +44,16 @@ public class DetallePedidoDAO {
             return detalle;
         });
     }
+
+    // Método para guardar un detalle de pedido en la base de datos
     public void guardar(modeloDetallePedido detallePedido) {
         String sql = "INSERT INTO detalle_pedido (pedido_id, producto_id, cantidad, precio_total) VALUES (?, ?, ?, ?)";
         template.update(sql, detallePedido.getPedido().getId(), detallePedido.getProducto().getId(), detallePedido.getCantidad(), detallePedido.getPrecioTotal());
     }
 
-    public void edit(modeloDetallePedido detalleExistente) {
-        String sql = "UPDATE detalle_pedido SET cantidad = ?, precio_total = ? WHERE id = ?";
-        template.update(sql, detalleExistente.getCantidad(), detalleExistente.getPrecioTotal(), detalleExistente.getId());
-    }
-
+    // Método para buscar un detalle de pedido por pedido y producto
     public modeloDetallePedido buscarPorPedidoYProducto(Long idPedido, Long idProducto) {
         try {
-            System.out.println("Buscando detalle de pedido para idPedido: " + idPedido + " y idProducto: " + idProducto);
             String sql = "SELECT * FROM detalle_pedido WHERE pedido_id = ? AND producto_id = ?";
             modeloDetallePedido detallePedido = template.queryForObject(sql, new Object[]{idPedido, idProducto}, (rs, rowNum) -> {
                 modeloDetallePedido detalle = new modeloDetallePedido();
@@ -81,6 +75,8 @@ public class DetallePedidoDAO {
             return null;
         }
     }
+
+    // Método para obtener un producto por su ID
     private modeloProducto obtenerProductoPorId(Long productoId) {
         String sql = "SELECT * FROM producto WHERE id = ?";
         return template.queryForObject(sql, new Object[]{productoId}, (rs, rowNum) -> {
@@ -96,6 +92,7 @@ public class DetallePedidoDAO {
             return producto;
         });
     }
+
     // Método para actualizar un detalle de pedido en la base de datos
     public void actualizar(modeloDetallePedido detalle) {
         String sql = "UPDATE detalle_pedido SET cantidad = :cantidad, precio_total = :precioTotal WHERE id = :id";
@@ -109,22 +106,25 @@ public class DetallePedidoDAO {
         namedParameterJdbcTemplate.update(sql, paramMap);
     }
 
+    // Método para eliminar un detalle de pedido por su ID
     public void eliminar(Long idDetallePedido) {
         String sql = "DELETE FROM detalle_pedido WHERE id = ?";
         template.update(sql, idDetallePedido);
     }
 
+    // Método para actualizar la cantidad de un producto en un detalle de pedido
     public void actualizarCantidad(Long idPedido, Long idProducto, int nuevaCantidad) {
         String sql = "UPDATE detalle_pedido SET cantidad = ? WHERE pedido_id = ? AND producto_id = ?";
         template.update(sql, nuevaCantidad, idPedido, idProducto);
     }
 
+    // Método para eliminar un detalle de pedido por pedido y producto
     public void eliminarPorPedidoYProducto(Long idPedido, Long idProducto) {
         String sql = "DELETE FROM detalle_pedido WHERE pedido_id = ? AND producto_id = ?";
         template.update(sql, idPedido, idProducto);
     }
 
-
+    // Método para obtener todos los detalles de un pedido
     public List<modeloDetallePedido> obtenerDetallesPedido(Long idPedido) {
         String sql = "SELECT dp.id, dp.cantidad, dp.precio_total, p.id as producto_id, p.nombre, p.talla, p.descripcion, p.precio, p.stock, p.imagen " +
                 "FROM detalle_pedido dp INNER JOIN producto p ON dp.producto_id = p.id WHERE dp.pedido_id = ?";
@@ -146,10 +146,8 @@ public class DetallePedidoDAO {
             producto.setImagen(rs.getBytes("imagen")); // Asignar la imagen
 
             detalle.setProducto(producto);
-
             return detalle;
         });
     }
 
 }
-

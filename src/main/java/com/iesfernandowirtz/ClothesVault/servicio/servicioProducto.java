@@ -1,7 +1,6 @@
 package com.iesfernandowirtz.ClothesVault.servicio;
 
 import com.iesfernandowirtz.ClothesVault.interfaz.interfazProducto;
-import com.iesfernandowirtz.ClothesVault.modelo.modeloCategoria;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloDetallePedido;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloPedido;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloProducto;
@@ -12,29 +11,28 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 import java.util.List;
 import java.util.Map;
-
-@Service
+@Service // Indica que esta clase es un componente de servicio de la aplicación
 public class servicioProducto implements interfazProducto {
+
+    // Definición de un logger para registrar información o errores
     private static final Logger logger = Logger.getLogger(servicioProducto.class.getName());
 
-    @Autowired
+    @Autowired // Inyección de dependencias de productoDAO
     productoDAO dao;
 
-    @Autowired
+    @Autowired // Inyección de dependencias de DetallePedidoDAO
     DetallePedidoDAO detallePedidoDAO;
 
-    @Autowired
+    @Autowired // Inyección de dependencias de PedidoDAO
     PedidoDAO pedidoDAO;
 
     @Override
     public List<Map<String, Object>> listar() {
         return dao.listar();
     }
-
 
     @Override
     public List<Map<String, Object>> listar(int id) {
@@ -53,28 +51,29 @@ public class servicioProducto implements interfazProducto {
 
     @Override
     public void delete(int id) {
-
+        // Método sin implementar para eliminar un producto por su ID
     }
 
     public List<String> listarMarcas() {
-        return dao.listarMarcasDeProveedores();
+        return dao.listarMarcasDeProveedores(); // Obtener una lista de marcas de proveedores
     }
 
     public List<modeloProducto> getProductosPorCategoria(Long idCategoria) {
-        return dao.getProductosPorCategoria(idCategoria);
+        return dao.getProductosPorCategoria(idCategoria); // Obtener productos por categoría
     }
 
     public byte[] getProductImage(Long productId) {
-        return dao.getProductImage(productId);
+        return dao.getProductImage(productId); // Obtener la imagen de un producto
     }
 
     public List<modeloProducto> getProductosPorProveedor(String nombreProveedor) {
-        return dao.getProductosPorProveedor(nombreProveedor);
+        return dao.getProductosPorProveedor(nombreProveedor); // Obtener productos por proveedor
     }
 
     public List<modeloProducto> getProductosPorCategoriaYProveedor(Long idCategoria, String nombreProveedor) {
-        return dao.getProductosPorCategoriaYProveedor(idCategoria, nombreProveedor);
+        return dao.getProductosPorCategoriaYProveedor(idCategoria, nombreProveedor); // Obtener productos por categoría y proveedor
     }
+
 
     @Transactional
     public void agregarProductoAlCarrito(Long idPedido, Long idProducto, int cantidad) {
@@ -128,9 +127,6 @@ public class servicioProducto implements interfazProducto {
             throw new RuntimeException("Error inesperado al agregar producto al carrito. Por favor, inténtalo de nuevo más tarde.");
         }
     }
-
-
-
 
 }
 

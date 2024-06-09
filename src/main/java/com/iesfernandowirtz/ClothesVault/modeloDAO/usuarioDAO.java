@@ -7,49 +7,50 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-
-
-@Repository
+@Repository // Indica que esta clase es un componente de acceso a datos
 public class usuarioDAO implements interfazUsuario {
 
-    @Autowired
-    JdbcTemplate templete;
+    @Autowired // Inyección de dependencias de JdbcTemplate
+    JdbcTemplate template;
 
     @Override
     public List<Map<String, Object>> listar() {
-        List<Map<String,Object>>lista = templete.queryForList("select * from usuario");
+        // Consulta para obtener una lista de todos los usuarios en forma de mapa
+        List<Map<String,Object>> lista = template.queryForList("select * from usuario");
         return lista;
     }
 
     @Override
     public List<Map<String, Object>> listar(String email) {
+        // Consulta para obtener un usuario específico por su correo electrónico
         String sql = "select * from usuario where email = ?";
-
-        return templete.queryForList(sql, email);
+        return template.queryForList(sql, email);
     }
 
     @Override
     public int add(modeloUsuario u) {
+        // Consulta para agregar un nuevo usuario a la base de datos
         String sql = "insert into usuario(email,contrasenha,nombre,apellido1,apellido2,direccion,cp)values(?,?,?,?,?,?,?)";
-
-        return  templete.update(sql,u.getEmail(),u.getContrasenha(),u.getNombre(),u.getApellido1(), u.getApellido2(), u.getDireccion(), u.getCp());
+        return template.update(sql, u.getEmail(), u.getContrasenha(), u.getNombre(), u.getApellido1(), u.getApellido2(), u.getDireccion(), u.getCp());
     }
 
     @Override
     public modeloUsuario edit(modeloUsuario u) {
+        // Método sin implementar para editar un usuario
         return null;
     }
 
     @Override
     public void delete(int id) {
-
+        // Método sin implementar para eliminar un usuario por su ID
     }
+
+    // Método auxiliar para mapear un ResultSet a un objeto modeloUsuario
     private modeloUsuario mapRowToUsuario(ResultSet rs) throws SQLException {
         modeloUsuario usuario = new modeloUsuario();
         usuario.setId(rs.getLong("id"));
@@ -63,6 +64,7 @@ public class usuarioDAO implements interfazUsuario {
         return usuario;
     }
 
+    // Método para buscar un usuario por su correo electrónico
     public modeloUsuario buscarPorCorreo(String email) {
         String sql = "SELECT * FROM usuario WHERE email = ?";
         try {
@@ -71,7 +73,7 @@ public class usuarioDAO implements interfazUsuario {
             System.out.println("Parámetro email: " + email);
 
             // Ejecutar la consulta SQL y mapear el resultado a un objeto modeloUsuario
-            return templete.queryForObject(sql, new Object[]{email}, (rs, rowNum) -> mapRowToUsuario(rs));
+            return template.queryForObject(sql, new Object[]{email}, (rs, rowNum) -> mapRowToUsuario(rs));
         } catch (EmptyResultDataAccessException e) {
             // Registro de depuración en caso de que no se encuentre ningún resultado
             System.out.println("No se encontraron resultados para el correo electrónico: " + email);
@@ -82,6 +84,4 @@ public class usuarioDAO implements interfazUsuario {
             return null;
         }
     }
-
-
 }

@@ -18,9 +18,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/usuarios")
-@CrossOrigin(origins = "http://localhost:8080") // Permitir solicitudes desde localhost:8080
+@CrossOrigin(origins = "http://localhost:8080")
 public class controladorUsuario {
 
+    // Inyección de dependencias para servicios
     @Autowired
     private servicioUsuario servicioUsuario;
 
@@ -30,20 +31,22 @@ public class controladorUsuario {
     @Autowired
     private servicioDetallePedido servicioDetallePedido;
 
-
     @Autowired
     private servicioProducto servicioProducto;
 
+    // Método para listar usuarios
     @GetMapping("/listar")
     public List<Map<String, Object>> listar() {
         return servicioUsuario.listar();
     }
 
+    // Método para listar usuarios por su email
     @GetMapping("/listarXEmail/{email}")
     public List<Map<String, Object>> listar(@PathVariable String email) {
         return servicioUsuario.listar(email);
     }
 
+    // Método para insertar un nuevo usuario
     @PostMapping("/insertar")
     public String addUsuario(@RequestBody modeloUsuario u) {
         int r = servicioUsuario.add(u);
@@ -54,16 +57,21 @@ public class controladorUsuario {
         }
     }
 
-    @PostMapping("/iniciarSesion")
+    // Método para crear pedidos de usuario
+    @PostMapping("/crearPedidos")
     public ResponseEntity<?> iniciarSesion(@RequestBody modeloUsuario usuario) {
+        // Buscar usuario por correo
         modeloUsuario usuarioEncontrado = servicioUsuario.buscarPorCorreo(usuario.getEmail());
 
+        // Si el usuario no existe, devolver error 404
         if (usuarioEncontrado == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
         }
 
+        // Buscar pedido en proceso por el usuario
         modeloPedido pedidoProcesando = servicioPedido.buscarPedidoProcesandoPorUsuario(usuarioEncontrado);
 
+        // Si hay un pedido en proceso, devolver detalles del pedido
         if (pedidoProcesando != null) {
             List<modeloDetallePedido> detallesPedido = servicioDetallePedido.buscarDetallesPorPedido(pedidoProcesando);
             System.out.println("ID del pedido en procesamiento: " + pedidoProcesando.getId());
@@ -72,6 +80,7 @@ public class controladorUsuario {
             response.put("idPedido", pedidoProcesando.getId());
             return ResponseEntity.ok(response);
         } else {
+            // Si no hay un pedido en proceso, crear uno nuevo
             modeloPedido nuevoPedido = servicioPedido.crearPedidoProcesandoParaUsuario(usuarioEncontrado);
             System.out.println("ID del nuevo pedido creado: " + nuevoPedido.getId());
             Map<String, Object> response = new HashMap<>();
@@ -80,6 +89,4 @@ public class controladorUsuario {
             return ResponseEntity.ok(response);
         }
     }
-
-
 }

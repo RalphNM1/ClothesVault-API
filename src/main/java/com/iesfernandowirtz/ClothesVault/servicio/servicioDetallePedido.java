@@ -1,4 +1,5 @@
 package com.iesfernandowirtz.ClothesVault.servicio;
+
 import com.iesfernandowirtz.ClothesVault.interfaz.interfazDetallePedido;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloDetallePedido;
 import com.iesfernandowirtz.ClothesVault.modeloDAO.DetallePedidoDAO;
@@ -9,10 +10,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-@Service
-public class servicioDetallePedido implements interfazDetallePedido{
+@Service // Indica que esta clase es un componente de servicio de la aplicación
+public class servicioDetallePedido implements interfazDetallePedido {
 
-    @Autowired
+    @Autowired // Inyección de dependencias de DetallePedidoDAO
     private DetallePedidoDAO dao;
 
     @Override
@@ -37,17 +38,17 @@ public class servicioDetallePedido implements interfazDetallePedido{
 
     @Override
     public void delete(int id) {
-
+        // Método sin implementar para eliminar un detalle de pedido por su ID
     }
 
     @Override
     public List<modeloDetallePedido> buscarDetallesPorPedido(modeloPedido pedido) {
+        // Método para buscar detalles de pedido por el pedido asociado utilizando el método correspondiente en DetallePedidoDAO
         return dao.buscarDetallesPorPedido(pedido);
     }
 
     public void guardarDetallePedido(modeloDetallePedido detallePedido) {
+        // Método para guardar un detalle de pedido utilizando el método correspondiente en DetallePedidoDAO
         dao.guardar(detallePedido);
     }
-
-
 }

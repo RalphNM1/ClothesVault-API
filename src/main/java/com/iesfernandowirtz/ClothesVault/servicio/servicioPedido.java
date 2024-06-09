@@ -3,31 +3,28 @@ package com.iesfernandowirtz.ClothesVault.servicio;
 import com.iesfernandowirtz.ClothesVault.interfaz.interfazPedido;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloDetallePedido;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloPedido;
-import com.iesfernandowirtz.ClothesVault.modelo.modeloProducto;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloUsuario;
 import com.iesfernandowirtz.ClothesVault.modeloDAO.PedidoDAO;
-import com.iesfernandowirtz.ClothesVault.modeloDAO.productoDAO;
-
 import com.iesfernandowirtz.ClothesVault.modeloDAO.DetallePedidoDAO;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import jakarta.transaction.Transactional;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-@Service
+@Service // Indica que esta clase es un componente de servicio de la aplicación
 public class servicioPedido implements interfazPedido {
 
-    @Autowired
+    @Autowired // Inyección de dependencias de PedidoDAO
     private PedidoDAO dao;
-    @Autowired
+
+    @Autowired // Inyección de dependencias de DetallePedidoDAO
     private DetallePedidoDAO detallePedidoDAO;
 
-
+    // Definición de un logger para registrar información o errores
     private static final Logger logger = Logger.getLogger(servicioProducto.class.getName());
 
     @Override
@@ -52,7 +49,7 @@ public class servicioPedido implements interfazPedido {
 
     @Override
     public void delete(int id) {
-
+        // Método sin implementar para eliminar un pedido por su ID
     }
 
     public modeloPedido buscarPedidoProcesandoPorUsuario(modeloUsuario usuario) {
@@ -60,24 +57,23 @@ public class servicioPedido implements interfazPedido {
     }
 
     public modeloPedido crearPedidoProcesandoParaUsuario(modeloUsuario usuario) {
-        // Aquí crearemos un nuevo pedido para el usuario con estado "Procesando"
+        // Crear un nuevo pedido para el usuario con estado "Procesando"
         modeloPedido pedido = new modeloPedido();
         pedido.setUsuario(usuario);
         pedido.setEstado("Procesando");
         pedido.setFechaPedido(Date.valueOf(LocalDate.now()));
         return dao.add(pedido);
     }
+
     public modeloPedido obtenerPedidoPorId(Long idPedido) {
         return dao.buscarPorId(idPedido);
     }
 
-
-    @Transactional
+    @Transactional // Anotación para indicar que este método es transaccional
     public void actualizarCantidadEnBD(Long idPedido, Long idProducto, int nuevaCantidad) {
         try {
             detallePedidoDAO.actualizarCantidad(idPedido, idProducto, nuevaCantidad);
-            recalcularPrecioTotal(idPedido,idProducto);
-
+            recalcularPrecioTotal(idPedido,idProducto); // Recalcular el precio total después de actualizar la cantidad
         } catch (Exception e) {
             // Manejar la excepción según sea necesario
             logger.severe("Error al actualizar la cantidad en la base de datos: " + e.getMessage());
@@ -85,7 +81,7 @@ public class servicioPedido implements interfazPedido {
         }
     }
 
-    @Transactional
+    @Transactional // Anotación para indicar que este método es transaccional
     public void eliminarProductoDeBD(Long idPedido, Long idProducto) {
         try {
             detallePedidoDAO.eliminarPorPedidoYProducto(idPedido, idProducto);
@@ -112,4 +108,13 @@ public class servicioPedido implements interfazPedido {
         dao.actualizarPrecioTotal(idPedido, idProducto, precioTotal);
     }
 
+    public boolean actualizarEstado(Long idPedido, String nuevoEstado) {
+        modeloPedido pedido = dao.buscarPorId(idPedido);
+        if (pedido != null) {
+            pedido.setEstado(nuevoEstado);
+            dao.actualizarPedido(pedido);
+            return true;
+        }
+        return false;
+    }
 }

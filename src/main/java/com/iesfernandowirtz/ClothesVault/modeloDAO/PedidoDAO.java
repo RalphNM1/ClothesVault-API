@@ -1,9 +1,7 @@
 package com.iesfernandowirtz.ClothesVault.modeloDAO;
 
 import com.iesfernandowirtz.ClothesVault.interfaz.interfazPedido;
-import com.iesfernandowirtz.ClothesVault.modelo.modeloDetallePedido;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloPedido;
-import com.iesfernandowirtz.ClothesVault.modelo.modeloProducto;
 import com.iesfernandowirtz.ClothesVault.modelo.modeloUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -12,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import javax.persistence.EntityManager;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,11 +18,11 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Repository // Indica que esta clase es un componente de acceso a datos
 public class PedidoDAO implements interfazPedido {
-    @Autowired
-    JdbcTemplate template;
 
+    @Autowired // Inyección de dependencias de JdbcTemplate
+    JdbcTemplate template;
 
     @Override
     public List<Map<String, Object>> listar() {
@@ -52,7 +50,7 @@ public class PedidoDAO implements interfazPedido {
         } catch (DataAccessException e) {
             // Manejar cualquier excepción de acceso a datos aquí
             e.printStackTrace();
-            return null; // O lanza una excepción personalizada
+            return null; // O lanzar una excepción personalizada
         }
         return p;
     }
@@ -64,17 +62,20 @@ public class PedidoDAO implements interfazPedido {
 
     @Override
     public void delete(int id) {
-
+        // Método sin implementar para eliminar un pedido por su ID
     }
+
+    // Método auxiliar para mapear una fila de la tabla pedido a un objeto modeloPedido
     private modeloPedido mapRowToPedido(ResultSet rs) throws SQLException {
         modeloPedido pedido = new modeloPedido();
         pedido.setId(rs.getLong("id"));
         pedido.setEstado(rs.getString("estado"));
         pedido.setFechaPedido(rs.getDate("fecha_pedido"));
-        // No necesito mapear el usuario_id, ya que este campo se almacena en la entidad modeloPedido como una relación con el modeloUsuario.
+        // No es necesario mapear el usuario_id, ya que este campo se almacena en la entidad modeloPedido como una relación con el modeloUsuario.
         return pedido;
     }
 
+    // Método para buscar un pedido en estado "Procesando" por usuario
     public modeloPedido buscarPedidoProcesandoPorUsuario(modeloUsuario usuario) {
         String sql = "SELECT * FROM pedido WHERE usuario_id = ? AND estado = 'Procesando'";
         try {
@@ -84,6 +85,7 @@ public class PedidoDAO implements interfazPedido {
         }
     }
 
+    // Método para buscar un pedido por su ID
     public modeloPedido buscarPorId(Long idPedido) {
         String sql = "SELECT * FROM pedido WHERE id = ?";
         try {
@@ -100,12 +102,15 @@ public class PedidoDAO implements interfazPedido {
         }
     }
 
+    // Método para actualizar el precio total de un producto en un pedido
     public void actualizarPrecioTotal(Long idPedido, Long idProducto, double precioTotal) {
         String sql = "UPDATE detalle_pedido SET precio_total = ? WHERE pedido_id = ? AND producto_id = ?";
         template.update(sql, precioTotal, idPedido, idProducto);
     }
 
-
-
-
+    // Método para actualizar un pedido en la base de datos
+    public void actualizarPedido(modeloPedido p) {
+        String sql = "UPDATE pedido SET estado = ?, fecha_pedido = ? WHERE id = ?";
+        template.update(sql, p.getEstado(), p.getFechaPedido(), p.getId());
+    }
 }
